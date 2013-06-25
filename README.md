@@ -1,8 +1,7 @@
 eBay Rock, Paper, Scissors Unattended Test Solution
 ---------------------------------------------------
-Author:
-Nimesh Hathiwala
-n_hathiwala@hotmail.com
+Nimesh Hathiwala<br/>
+n_hathiwala@hotmail.com<br/>
 
 
 Building / Deploying
