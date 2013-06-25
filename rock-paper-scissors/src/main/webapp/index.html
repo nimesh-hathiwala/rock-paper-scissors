@@ -1,0 +1,217 @@
+<html>
+
+<head>
+	<title>Rock, Paper, Scissors</title>	
+	<style type="text/css">
+		fieldset {width:400;}
+		table {width:100%; background-color:aqua;}
+		td {text-align:center;}
+		input {width:100;}
+		legend {text-align:center;}
+	</style>
+</head>
+
+<body>
+	<h2>Rock, Paper, Scissors</h2>
+	
+	<form name="robotVsRobotForm" action="playRobotVsRobot" id="robotVsRobotForm" method="post">
+		<fieldset >
+			<legend>ROBOT vs ROBOT</legend>
+			<table>
+				<tr>
+					<td><b>ROBOT 1</b></td>
+					<td><b>ROBOT 2</b></td>
+				</tr>
+				<tr>
+					<td><span id="robot1Score">0</span></td>
+					<td><span id="robot2Score">0</span></td>
+				</tr>
+				<tr>
+					<td colspan="2"><span id="game1Ready">Click Play to begin!</span></td>
+				</tr>
+				<tr>
+					<td colspan="2"><span id="game1Draw" hidden="true">DRAW!</span></td>
+				</tr>
+				<tr>
+					<td><span id="robot1Wins" hidden="true">WINNER!</span></td>
+					<td><span id="robot2Wins" hidden="true">WINNER!</span></td>
+				</tr>
+				<tr>
+					<td><img id="robot1Pic" src="img/ROCK.png"/></td>
+					<td><img id="robot2Pic" src="img/ROCK_R.png"/></td>
+				</tr>
+				<tr>
+					<td colspan="2"><input type="submit" value="Play!"></td>
+				</tr>
+			</table>
+		</fieldset>
+	</form>
+
+	<form name="humanVsRobotForm" action="playHumanVsRobot" id="humanVsRobotForm" method="post">
+		<br/>
+		<fieldset>
+			<legend>YOU vs ROBOT</legend>
+			
+			<table>
+				<tr>
+					<td><b>YOU</b></td>
+					<td><b>ROBOT</b></td>
+				</tr>
+				<tr>
+					<td><span id="playerScore">0</span></td>
+					<td><span id="robot3Score">0</span></td>
+				</tr>
+				
+				<tr>
+					<td colspan="2"><span id="game2Ready">Click a hand on the left to begin!</span></td>
+				</tr>
+				<tr>
+					<td colspan="2"><span id="game2Draw" hidden="true">DRAW!</span></td>
+				</tr>
+				<tr>
+					<td><span id="userWins" hidden="true">WINNER!</span></td>
+					<td><span id="robot3Wins" hidden="true">WINNER!</span></td>
+				</tr>
+				<tr>
+					<td>
+						<img id="userPicRock" src="img/ROCK.png"/><br/><img id="userPicPaper" src="img/PAPER.png"/><br/><img id="userPicScissors" src="img/SCISSORS.png"/>
+						<input type="hidden" id="humanGesture" name="humanGesture" value=""/>
+					</td>
+					<td><img id="robot3Pic" src="img/ROCK_R.png"/></td>
+				</tr>
+			</table>
+		</fieldset>
+	</form>
+	
+	<form name="resetGamesForm" action="resetGames" id="resetGamesForm" method="post">
+		<fieldset >
+			<legend>RESET</legend>
+			<table>
+				<tr>
+					<td><input type="submit" value="Reset scores"></td>
+				</tr>
+			</table>
+		</fieldset>
+	</form>	
+	
+</body>
+</html>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript">
+	var userPicRock = $('#userPicRock');
+	var userPicPaper = $('#userPicPaper');
+	var userPicScissors = $('#userPicScissors');
+	var robotVsRobotForm = $('#robotVsRobotForm');
+	var humanVsRobotForm = $('#humanVsRobotForm');
+	var resetGamesForm = $('#resetGamesForm');
+
+	robotVsRobotForm.submit(function() {
+		$.ajax({
+			type : robotVsRobotForm.attr('method'),
+			url : robotVsRobotForm.attr('action'),
+			data : robotVsRobotForm.serialize(),
+			dataType : 'json',
+			success : function(data) {
+				hideGame1Messages();
+				$('#robot1Score').text(data.player1Score);
+				$('#robot2Score').text(data.player2Score);
+				$('#robot1Pic').attr("src", "img/" + data.player1Gesture + ".png");
+				$('#robot2Pic').attr("src", "img/" + data.player2Gesture + "_R.png");
+				switch (data.result) {
+			    case "PLAYER1":
+			    	$('#robot1Wins').show();
+			        break;
+			    case "PLAYER2":
+			    	$('#robot2Wins').show();
+			        break;
+			    default:
+			    	$('#game1Draw').show();
+			        break;
+				}
+			}
+		});
+		return false;
+	});
+	
+	userPicRock.click(function() {
+		$('#humanGesture').val("ROCK");
+		humanVsRobotForm.submit();
+	});
+	
+	userPicPaper.click(function() {
+		$('#humanGesture').val("PAPER");
+		humanVsRobotForm.submit();
+	});
+	
+	userPicScissors.click(function() {
+		$('#humanGesture').val("SCISSORS");
+		humanVsRobotForm.submit();
+	});
+	
+	humanVsRobotForm.submit(function() {
+		$.ajax({
+			type : humanVsRobotForm.attr('method'),
+			url : humanVsRobotForm.attr('action'),
+			data : humanVsRobotForm.serialize(),
+			dataType : 'json',
+			success : function(data) {
+				$('#playerScore').text(data.player1Score);
+				$('#robot3Score').text(data.player2Score);
+				$('#robot3Pic').attr("src", "img/" + data.player2Gesture + "_R.png");
+				hideGame2Messages();
+				switch (data.result) {
+			    case "PLAYER1":
+			    	$('#userWins').show();
+			        break;
+			    case "PLAYER2":
+			    	$('#robot3Wins').show();
+			        break;
+			    default:
+			    	$('#game2Draw').show();
+			        break;
+				}
+
+			}
+		});
+		return false;
+	});
+
+	resetGamesForm.submit(function() {
+		$.ajax({
+			type : resetGamesForm.attr('method'),
+			url : resetGamesForm.attr('action'),
+			data : resetGamesForm.serialize(),
+			dataType : 'json',
+			success : function(data) {
+				hideGame1Messages();
+				hideGame2Messages()
+				$('#robot1Pic').attr("src", "img/ROCK.png");
+				$('#robot2Pic').attr("src", "img/ROCK_R.png");
+				$('#robot3Pic').attr("src", "img/ROCK_R.png");
+				$('#playerScore').text("0");
+				$('#robot1Score').text("0");
+				$('#robot2Score').text("0");
+				$('#robot3Score').text("0");
+				$('#game1Ready').show();
+				$('#game2Ready').show();
+			}
+		});
+		return false;
+	});
+	
+	function hideGame1Messages(){
+		$('#robot1Wins').hide();
+		$('#robot2Wins').hide();
+		$('#game1Draw').hide();
+		$('#game1Ready').hide();
+	}
+	
+	function hideGame2Messages(){
+		$('#userWins').hide();
+		$('#robot3Wins').hide();
+		$('#game2Draw').hide();
+		$('#game2Ready').hide();
+	}
+	
+</script>
