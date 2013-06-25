@@ -3,16 +3,6 @@ eBay Rock, Paper, Scissors Unattended Test Solution
 Author:
 Nimesh Hathiwala
 n_hathiwala@hotmail.com
----------------------------------------------------
-
-The solution.zip file should be extracted.
-It contains -
-
-- rock-paper-scissors.war
-  Web application war file
-  
-- rock-paper-scissors.zip
-  Eclipse project of the web application implementation
 
 
 Building / Deploying
